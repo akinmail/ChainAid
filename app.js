@@ -118,6 +118,7 @@ app.post("/ussd", (req, res, next)=>{
       message = "Welcome to ChainAid \n";
       message += "1: Registration \n";
       message += "2: Collect";
+      endSession = false;
     }
   }
 
@@ -126,22 +127,24 @@ app.post("/ussd", (req, res, next)=>{
     message = "Welcome to ChainAid \n";
     message += "1: Registration \n";
     message += "2: Collect";
-
+    endSession = false;
   }
   if(currState=='menu'){
     if (req.body.text === '1') {
       req.session.state = "1a";
       message = "Please enter your firstname \n"; 
+      endSession = false;
     }else if (req.body.text === '2') {
       req.session.state = "menu";  
       message = "Show this code to the agent " + Math.floor((Math.random() * 10000000) + 1) +" \n";  
       endSession = true;
-    
+      endSession = false;
     }
   }else if(currState=="1a"){
     req.session.state = "1b";
     message = "Please enter your lastname \n"; 
     req.session.first_name = req.body.text;
+    endSession = false;
   }
   else if(currState=="1b"){
     req.session.state = "1c";
@@ -149,6 +152,7 @@ app.post("/ussd", (req, res, next)=>{
     message += "1: Male \n";
     message += "2: Female";
     req.session.last_name = req.body.text;
+    endSession = false;
   }
   else if(currState=="1c"){
     if (req.body.text === '1') {
